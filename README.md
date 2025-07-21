@@ -27,6 +27,7 @@ Este projeto realiza a **coleta, organização e armazenamento** de dados financ
 ---
 
 ## 📁 Estrutura
+```text
 
 analise_investimentos/
 │
