@@ -33,6 +33,7 @@ Este projeto realiza a **coleta, organização e armazenamento** de dados financ
 - Gráfico de dispersão: Relação entre P/L (Preço/Lucro) e Crescimento do Lucro, destacando os tickers no gráfico para facilitar identificação.
 
 ## 📁 Estrutura
+```text
 
 analise_investimentos/
 │
