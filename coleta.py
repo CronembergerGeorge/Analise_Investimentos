@@ -2,32 +2,34 @@ import pandas as pd
 import yfinance as yf
 from formatacao import formatar_data, formatar_valor, formatar_percentual, formatar_numeros
 
+#Calcula a relação divida/Ebitda para um ticker
 def get_divida_ebitda(ticker):
-    ticker = yf.Ticker(ticker)
-    info = ticker.info
-    divida = info.get('totalDebt', 0)
-    ebitda = info.get('ebitda', 0)
+    ticker = yf.Ticker(ticker) # Cria objeto Ticker
+    info = ticker.info # Obtem informações da empresa
+    divida = info.get('totalDebt', 0) # Pega divida total, padrao 0
+    ebitda = info.get('ebitda', 0) # Pega EBITDA total, padrao 0
     
-    if ebitda == 0:
+    if ebitda == 0: # Evita divisao por 0
         return "N/A"
     
-    divida_ebitda = divida / ebitda
+    divida_ebitda = divida / ebitda # Realiza o calculo desejado
     return divida_ebitda
 
-def coletar_dados_completos(tickers):
+def coletar_dados_completos(tickers): # Coleta dados financeiros para uma lista de tickers
 
-    dados = []
+    dados = [] # Cria uma lista vazia para armazenas dados
     
     for tck in tickers:
-        print(f"Baixando dados para {tck}...")
+        print(f"Baixando dados para {tck}...") # Mostra o progresso
         t = yf.Ticker(tck)
         info = t.info
 
-        try:
-            hist = t.history(period='5d')
-            data_atual = str(hist.index[-1].date())
+        # Tenta obter a data do ultimo preço disponivel
+        try: 
+            hist = t.history(period='5d') #Baixa o historico de 5 dias
+            data_atual = str(hist.index[-1].date()) # seleciona a ultima data
         except:
-            data_atual = "N/A"
+            data_atual = "N/A" # Define uma saida N/A em caso de falha
 
         # Indicadores principais
         indicadores = {
@@ -60,7 +62,7 @@ def coletar_dados_completos(tickers):
         }
 
         # Dados trimestrais (income statement)
-        income_statement = t.quarterly_income_stmt
+        income_statement = t.quarterly_income_stmt 
         if income_statement is not None and not income_statement.empty:
             ultimo_trimestre = income_statement.columns[0]
             receita = income_statement.loc['Total Revenue', ultimo_trimestre] if 'Total Revenue' in income_statement.index else None
@@ -68,11 +70,11 @@ def coletar_dados_completos(tickers):
         else:
             receita = lucro = None
 
-        indicadores['Receita'] = receita
+        indicadores['Receita'] = receita 
         indicadores['Lucro'] = lucro
-        dados.append(indicadores)
+        dados.append(indicadores) # Adiciona indicadores Receita e Lucro a lista
 
-    df = pd.DataFrame(dados)
+    df = pd.DataFrame(dados) # Cria o DataFrame com todos os dados
     colunas_percentuais = [
         'Crescimento receita', 'Crescimento lucro', 
         'ROE (%)', 'Margem Líquida (%)', 'Payout Ratio'
