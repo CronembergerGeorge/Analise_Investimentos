@@ -15,15 +15,14 @@ Este projeto realiza a **coleta, organização e armazenamento** de dados financ
 ---
 
 ## 📦 Funcionalidades
-
 ✅ Coleta de dados para uma lista personalizada de ações  
 ✅ Indicadores financeiros: P/L, ROE, Beta, Margem líquida, etc.  
 ✅ Dividendos: último valor, data do pagamento, yield e média 5Y  
 ✅ Crescimento de receita e lucro  
 ✅ Métricas como EV/EBITDA, Dívida/EBITDA, FCF  
 ✅ Exportação para banco de dados SQLite  
-✅ Exportação para planilha Excel (.xlsx)
-✅ Visualização gráfica de indicadores financeiros importantes (via matplotlib)
+✅ Exportação para planilha Excel (.xlsx)  
+✅ Visualização gráfica de indicadores financeiros importantes (via matplotlib)  
 
 ---
 📊 Visualização de Dados - gráficos.py
