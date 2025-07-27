@@ -11,6 +11,7 @@ Este projeto realiza a **coleta, organização e armazenamento** de dados financ
 - pandas
 - SQLite (via `sqlite3`)
 - openpyxl (para exportação `.xlsx`)
+- matplotlib – Geração de gráficos  
 
 ---
 
