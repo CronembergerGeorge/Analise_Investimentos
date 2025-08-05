@@ -44,7 +44,32 @@ def get_top_by_column(column="", limit=10):
         cursor.execute(query,(limit,))
         return '\n'.join([f'{row[0]} : {row[1]}' for row in cursor.fetchall()])
 
+def get_columns():
+    excluir = ["ID","Nome"]
+        
+    with connection() as con:
+        cursor = con.cursor()
+        query = f'''
+                PRAGMA table_info(stocks)
+        '''
+        cursor.execute(query)
+        return [col for col in [row[1] for row in cursor.fetchall()] if col not in excluir]
+        #return '\n'.join([f'{row[1]}' for row in cursor.fetchall()])
+
+def get_tickers():
+    with connection() as con:
+        cursor = con.cursor()
+        query = f'''
+                SELECT DISTINCT Ticker
+                FROM stocks
+                ORDER BY Ticker
+        '''
+        cursor.execute(query)
+        return [row[0] for row in cursor.fetchall()]
+        
+
 #print(get_top_by_column('P/L', 10))
 #print(segmento())
-print(setor())
-
+#print(setor())
+#print(get_columns())
+print(get_tickers())
