@@ -12,6 +12,8 @@ Este projeto realiza a **coleta, organização e armazenamento** de dados financ
 - SQLite (via `sqlite3`)
 - openpyxl (para exportação `.xlsx`)
 - matplotlib – Geração de gráficos  
+- Plotly - Criação e visualização gráfica Interativa
+- Streamlit - Interface Interativa
 
 ---
 
@@ -42,7 +44,16 @@ analise_investimentos/
 │ └── investimentos.xlsx # Exportação para Excel
 │
 ├── coleta.py # Script principal de coleta
+├── db.py # Conexão com banco de dados
 ├── formatacao.py # Funções auxiliares para formatar valores
-├── main.py # Script principal de execução
 ├── graficos.py
+├── main.py # Script principal de execução
+├── query.py #Funções SQL reutilizáveis
+├── streamlit.py #Interface interativa via Straemlit (Gráficos e Filtros)
 ├── README.md
+
+🚀 Próximos Passos (Melhorias Futuras)
+
+* Classificação por setores
+* Atualização automática dos dados
+* Análises automáticas / Regras de investimento
