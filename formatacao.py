@@ -14,7 +14,7 @@ def formatar_percentual(valor):
         if pd.isna(valor):
             return "N/A"
         valor_float = float(valor)
-        return f'{valor_float:.2%}'
+        return f'{valor_float:.2f}%'
     except (ValueError, TypeError):
         return "N/A"
 

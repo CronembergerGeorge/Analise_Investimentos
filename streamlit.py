@@ -2,15 +2,26 @@ import streamlit as st
 import plotly.express as px
 import pandas as pd
 from db import connection
-from query import get_tickers, get_columns
+from query import get_tickers, get_columns, get_top_10, get_segmento, get_setor
 
+st.set_page_config(layout="wide")
 st.title("Visualizador de Indicadores Financeiros")
 
 st.sidebar.header("Filtros")
 
+setor_selecionado = st.sidebar.selectbox(
+    "Selecione o setor",[""] +
+    get_setor()
+    )
+
+segmento_selecionado = st.sidebar.selectbox(
+    "Selecione o segmento",[""] + 
+    get_segmento(setor_selecionado)
+    )
+
 ticker_selecionados = st.sidebar.multiselect(
     "Selecionar Empresas",
-    get_tickers()
+    get_tickers(setor_selecionado, segmento_selecionado)
 )
 
 indicadores_selecionados = st.sidebar.multiselect(
@@ -56,3 +67,50 @@ if st.sidebar.button("Visualizar Dados"):
             st.plotly_chart(fig, use_container_width=True)
         else:
             st.write("Selecione apenas 1 indicador para visualizar o grafico")
+
+else: 
+    filtro_coluna = None
+    filtro_valor = None
+
+    if segmento_selecionado != "":
+        filtro_coluna = "segmento"
+        filtro_valor = segmento_selecionado
+    if setor_selecionado != "":
+        filtro_coluna = "setor"
+        filtro_valor = setor_selecionado
+
+    col1, col2 = st.columns(2)
+    with col1:
+        indicador = st.selectbox(
+            "Primário", [""] +
+            get_columns(),
+            key="indicador 1"
+            )
+        top10_data = get_top_10([indicador], filtro_coluna, filtro_valor, limit=10)
+        df = pd.DataFrame(top10_data, columns=["Ticker", indicador])
+        fig = px.bar(
+            df,
+            x="Ticker",
+            y=indicador,
+            title=f"Top 10 por {indicador} filtrado por {filtro_coluna}"
+            )        
+        st.plotly_chart(fig,use_container_width=True)
+            
+    with col2:
+        second_indicador = st.selectbox(
+            "Secundário", [""] +
+            get_columns(indicador),
+            key="indicador 2"
+            )
+        if second_indicador != "":
+            top10_data = get_top_10([indicador, second_indicador], filtro_coluna, filtro_valor, limit=10)
+            df = pd.DataFrame(top10_data,columns=["Ticker", indicador, second_indicador])
+            fig = px.scatter(
+                df,
+                x = indicador,
+                y = second_indicador,
+                text="Ticker",
+                title=f"{indicador} vs {second_indicador}",
+                )
+            st.plotly_chart(fig, use_container_width = True)
+

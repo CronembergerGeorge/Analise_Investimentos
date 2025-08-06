@@ -1,51 +1,76 @@
 from db import connection
 
-def all():   
+def get_setor():
     with connection() as con:
         cursor = con.cursor()
-        cursor.execute('''
-                SELECT * FROM stocks
-                ORDER BY ID ASC
-                ''')
-        return cursor.fetchall()
-
-def setor():
-    with connection() as con:
-        cursor = con.cursor()
-        cursor.execute('''
-                    SELECT setor, COUNT(*) as qnt_stocks
-                    FROM stocks
-                    GROUP BY setor
-                    ORDER BY setor
-                    ''')
-        return '\n'.join([f'{row[0]} : {row[1]}' for row in cursor.fetchall()])
-
-def segmento():
-    with connection() as con:
-        cursor = con.cursor()
-        cursor.execute('''
-                   SELECT segmento, COUNT(*) as qnt_stocks
-                   FROM stocks
-                   GROUP BY segmento
-                   ORDER BY segmento
-                   ''')    
-        return '\n'.join([f'{row[0]} : {row[1]}' for row in cursor.fetchall()])
-    
-def get_top_by_column(column="", limit=10):
-    with connection() as con:
-        cursor = con.cursor()
-        query = f'''   
-            SELECT Ticker, "{column}"
+        query = f'''
+            SELECT DISTINCT setor
             FROM stocks
-            WHERE "{column}" < 20
-            ORDER BY "{column}" ASC
-            LIMIT ?
-        '''
-        cursor.execute(query,(limit,))
-        return '\n'.join([f'{row[0]} : {row[1]}' for row in cursor.fetchall()])
+            WHERE setor IS NOT NULL
+            ORDER BY setor
+            '''
+        cursor.execute(query)
+        return [row[0] for row in cursor.fetchall()]
+    
+def get_segmento(setor:str=None):
+    with connection() as con:
+        cursor = con.cursor()
+        query = f'''
+            SELECT segmento
+            FROM stocks
+            WHERE 1=1
+            '''
+        params = []
+        if setor:
+            query += " AND setor = ?"
+            params.append(setor)
 
-def get_columns():
-    excluir = ["ID","Nome"]
+        query += ' ORDER BY Ticker'
+        
+        cursor.execute(query, params)    
+        return [row[0] for row in cursor.fetchall()]
+    
+def get_tickers(setor:str=None, segmento:str=None):
+    with connection() as con:
+        cursor = con.cursor()
+        query = f'''
+            SELECT Ticker
+            FROM stocks
+            WHERE 1=1
+        '''
+        params = []
+        if setor:
+            query += ' AND setor = ?'
+            params.append(setor)
+        if segmento:
+            query += ' AND segmento = ?'
+            params.append(segmento)
+
+        query += ' ORDER BY Ticker'
+        cursor.execute(query, params)
+        return [row[0] for row in cursor.fetchall()]
+    
+def get_top_10(column:list[str], filter_col:str= None, filter_val: str=None, limit=10):
+    with connection() as con:
+        cursor = con.cursor()
+        select_cols = ", ".join([f'"{col}"' for col in ['Ticker'] + column])
+        query = f'''
+            SELECT {select_cols}
+            FROM stocks
+            WHERE {" AND ".join([f'"{col}" IS NOT NULL' for col in column])}
+        '''
+        params = []
+        if filter_col and filter_val:
+            query += f'AND "{filter_col}" = ?'
+            params.append(filter_val)
+        query += f'ORDER BY "{column[0]}" ASC LIMIT ?'
+        params.append(limit)
+
+        cursor.execute(query,params)
+        return cursor.fetchall()
+        
+def get_columns(indicador:str = None):
+    excluir = ["ID","Nome","Setor", "Segmento", "Ticker","52-Week Low", "52-Week High", "Ultimo Dividendo ($)", "Último Pagamento(Data)", "Proximo Dividendo(Data)", "Ultima Atualização",indicador]
         
     with connection() as con:
         cursor = con.cursor()
@@ -54,22 +79,4 @@ def get_columns():
         '''
         cursor.execute(query)
         return [col for col in [row[1] for row in cursor.fetchall()] if col not in excluir]
-        #return '\n'.join([f'{row[1]}' for row in cursor.fetchall()])
-
-def get_tickers():
-    with connection() as con:
-        cursor = con.cursor()
-        query = f'''
-                SELECT DISTINCT Ticker
-                FROM stocks
-                ORDER BY Ticker
-        '''
-        cursor.execute(query)
-        return [row[0] for row in cursor.fetchall()]
-        
-
-#print(get_top_by_column('P/L', 10))
-#print(segmento())
-#print(setor())
-#print(get_columns())
-print(get_tickers())
+    

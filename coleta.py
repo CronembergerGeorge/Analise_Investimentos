@@ -93,7 +93,7 @@ def coletar_dados_completos(tickers): # Coleta dados financeiros para uma lista 
     for col in colunas_percentuais:
         df[col] = df[col].apply(formatar_percentual)
     # Formata números
-    for col in colunas_numeros:
-        df[col] = df[col].apply(formatar_numeros)
+    #for col in colunas_numeros:
+     #   df[col] = df[col].apply(formatar_numeros)
         
     return df

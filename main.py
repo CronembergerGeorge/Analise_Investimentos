@@ -17,7 +17,7 @@ tickers = [
     'LIN', 'LMT', 'LRCX', 'LYB', 'MAIN', 'MAA', 'MCD', 'MDT', 'MET', 'MMM',
     'MS', 'MSFT', 'NEE', 'NGG', 'NUE', 'O', 'OHI', 'OKE', 'ORCL', 'PEP', 'PG',
     'PLD', 'PSA', 'PSX', 'PZZA', 'QCOM', 'REG', 'RGCO', 'SLG', 'SO', 'SPG',
-    'STAG', 'T', 'TROW', 'TTE', 'UL', 'UNP', 'UPS', 'VICI', 'VNO', 'VTR', 'VZ',
+    'STAG', 'T', 'TROW', 'TTE', 'UL', 'UNP', 'UPS', 'VICI', 'VTR', 'VZ',
     'WEC', 'WELL', 'WPC', 'XOM'
 ]
 """
