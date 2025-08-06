@@ -23,7 +23,7 @@ def formatar_numeros(valor):
         if pd.isna(valor):
             return "N/A"
         valor_float = float(valor)
-        return f'{valor_float:,.2f}'
+        return round(valor_float,2)
     except (ValueError, TypeError):
         return "N/A"
 

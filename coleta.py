@@ -37,8 +37,8 @@ def coletar_dados_completos(tickers): # Coleta dados financeiros para uma lista 
             "Nome": info.get("shortName", "N/A"),
             "Setor": info.get("sector", "N/A"),
             "Segmento": info.get("industry", "N/A"),
-            "Div Yield (%)": f"{info.get('dividendYield', 0):.2f}%" if info.get('dividendYield') is not None else "N/A",
-            "5Y Dividendo": f"{info.get("fiveYearAvgDividendYield", 0):.2f}%" if info.get('dividendYield') is not None else "N/A",
+            "Div Yield (%)": round(info.get('dividendYield', 0), 2) if info.get('dividendYield') is not None else None,
+            "5Y Dividendo": round(info.get("fiveYearAvgDividendYield", 0), 2) if info.get('fiveYearAvgDividendYield') is not None else None,
             "52-Week Low": info.get("fiftyTwoWeekLow"),
             "Preço Atual": info.get("currentPrice"),
             "52-Week High": info.get("fiftyTwoWeekHigh"),
@@ -46,14 +46,14 @@ def coletar_dados_completos(tickers): # Coleta dados financeiros para uma lista 
             "P/L": info.get("trailingPE"),
             "P/L Future": info.get("forwardPE"),
             "P/VP": info.get("priceToBook"),
-            "Crescimento receita": info.get("revenueGrowth", 0),
-            "Crescimento lucro": info.get("earningsGrowth", 0),
+            "Crescimento receita": round(info.get("revenueGrowth", 0) * 100, 2),
+            "Crescimento lucro": round(info.get("earningsGrowth", 0) * 100, 2),
             "Free Cash Flow": info.get("freeCashflow", 0),
             "EV/EBITDA": info.get("enterpriseToEbitda", 0),
             "Divida/EBITDA": get_divida_ebitda(tck),
-            "ROE (%)": (info.get("returnOnEquity", 0) or 0),
-            "Margem Líquida (%)": (info.get("profitMargins", 0) or 0),
-            "Payout Ratio": info.get("payoutRatio", 0),
+            "ROE (%)": round((info.get("returnOnEquity", 0) or 0) * 100, 2),
+            "Margem Líquida (%)": round((info.get("profitMargins", 0) or 0) * 100, 2),
+            "Payout Ratio": round(info.get("payoutRatio", 0) * 100, 2),
             "Ultimo Dividendo ($)": (info.get("lastDividendValue", 0)),
             "Último Pagamento(Data)": formatar_data(info.get("lastDividendDate", None)),
             "Proximo Dividendo(Data)": formatar_data(info.get("DividendDate", None)),
@@ -77,7 +77,8 @@ def coletar_dados_completos(tickers): # Coleta dados financeiros para uma lista 
     df = pd.DataFrame(dados) # Cria o DataFrame com todos os dados
     colunas_percentuais = [
         'Crescimento receita', 'Crescimento lucro', 
-        'ROE (%)', 'Margem Líquida (%)', 'Payout Ratio'
+        'ROE (%)', 'Margem Líquida (%)', 'Payout Ratio', 
+        'Div Yield (%)', '5Y Dividendo'
     ]
     colunas_numeros = [
         'P/L', 'P/L Future', 'P/VP', 'Beta', 'EV/EBITDA', 'Divida/EBITDA',
@@ -93,7 +94,7 @@ def coletar_dados_completos(tickers): # Coleta dados financeiros para uma lista 
     for col in colunas_percentuais:
         df[col] = df[col].apply(formatar_percentual)
     # Formata números
-    #for col in colunas_numeros:
-     #   df[col] = df[col].apply(formatar_numeros)
+    for col in colunas_numeros:
+       df[col] = df[col].apply(formatar_numeros)
         
     return df
