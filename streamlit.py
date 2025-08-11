@@ -3,6 +3,7 @@ import plotly.express as px
 import pandas as pd
 from db import connection
 from query import get_tickers, get_columns, get_top_10, get_segmento, get_setor
+from exportar import exportar_excel
 
 st.set_page_config(layout="wide")
 st.title("Visualizador de Indicadores Financeiros")
@@ -123,3 +124,12 @@ elif setor_selecionado != "" and segmento_selecionado != "":
             )
         st.plotly_chart(fig, use_container_width = True)
 
+caminho = exportar_excel()
+
+with open(caminho, 'rb') as file:
+    st.sidebar.download_button(
+        label = "Download",
+        data=file,
+        file_name="investimentos_.xlsx",
+        mime='application/vdn.openxmlformats-officedocument.spreadsheetml.sheet'
+        )

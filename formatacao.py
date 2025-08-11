@@ -45,3 +45,33 @@ def formatar_bilhoes(x, pos):
     except (ValueError, TypeError):
         return "N/A"
     
+def formatar_para_exportar(df):
+    colunas_percentuais = [
+        'Crescimento receita', 'Crescimento lucro', 
+        'ROE (%)', 'Margem Líquida (%)', 'Payout Ratio', 
+        'Div Yield (%)', '5Y Dividendo'
+    ]
+    colunas_numeros = [
+        'P/L', 'P/L Future', 'P/VP', 'Beta', 'EV/EBITDA', 'Divida/EBITDA',
+    ]
+    colunas_valores = [
+        'Preço Atual', 'Receita', 'Lucro', 'Market Cap (B)', 'Ultimo Dividendo ($)', 
+        'Free Cash Flow', '52-Week Low', '52-Week High'
+    ]
+    colunas_data = [
+        'Último Pagamento(Data)', 'Proximo Dividendo(Data)'
+        ]
+    # Formatar valores monetários
+    for col in colunas_valores:
+        df[col] = df[col].apply(formatar_valor)
+    # Formatar percentuais
+    for col in colunas_percentuais:
+        df[col] = df[col].apply(formatar_percentual)
+    # Formatar números
+    for col in colunas_numeros:
+        df[col] = df[col].apply(formatar_numeros)
+    # Formatar Data
+    for col in colunas_data:
+        df[col] = df[col].apply(formatar_data)
+
+    return df

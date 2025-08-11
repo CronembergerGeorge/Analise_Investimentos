@@ -75,26 +75,5 @@ def coletar_dados_completos(tickers): # Coleta dados financeiros para uma lista 
         dados.append(indicadores) # Adiciona indicadores Receita e Lucro a lista
 
     df = pd.DataFrame(dados) # Cria o DataFrame com todos os dados
-    colunas_percentuais = [
-        'Crescimento receita', 'Crescimento lucro', 
-        'ROE (%)', 'Margem Líquida (%)', 'Payout Ratio', 
-        'Div Yield (%)', '5Y Dividendo'
-    ]
-    colunas_numeros = [
-        'P/L', 'P/L Future', 'P/VP', 'Beta', 'EV/EBITDA', 'Divida/EBITDA',
-    ]
-    colunas_valores = [
-        'Preço Atual', 'Receita', 'Lucro', 'Market Cap (B)', 'Ultimo Dividendo ($)', 
-        'Free Cash Flow', '52-Week Low', '52-Week High'
-    ]
-    # Formata valores monetários
-    for col in colunas_valores:
-        df[col] = df[col].apply(formatar_valor)
-    # Formata percentuais
-    for col in colunas_percentuais:
-        df[col] = df[col].apply(formatar_percentual)
-    # Formata números
-    for col in colunas_numeros:
-       df[col] = df[col].apply(formatar_numeros)
         
     return df

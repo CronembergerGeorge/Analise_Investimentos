@@ -1,11 +1,9 @@
 import yfinance as yf
 import pandas as pd
 import sqlite3
-from tabulate import tabulate
 from coleta import coletar_dados_completos
+from db import connection
 
-
-conn = sqlite3.connect('data/investimentos.db')
 # Baixar dados de ações usando yfinance
 tickers = [
     'ABBV', 'ABT', 'ADC', 'ADP', 'AEP', 'ALL', 'AMGN', 'AMSF', 'AMT', 'ARTNA',
@@ -20,10 +18,6 @@ tickers = [
     'STAG', 'T', 'TROW', 'TTE', 'UL', 'UNP', 'UPS', 'VICI', 'VTR', 'VZ',
     'WEC', 'WELL', 'WPC', 'XOM'
 ]
-"""
-# Teste Unitario
-tickers = ['ABBV']
-"""
 # Iterar sobre os tickers e coletar informações
 dados = coletar_dados_completos(tickers)
 # Converter a lista de dados em um DataFrame
@@ -46,16 +40,9 @@ dados = dados[colunas_ordenadas]
 # Salvar os dados no banco de dados SQLite
 dados.index = range(1, len(dados) + 1)  # Ajustar o índice para começar em 1
 # Salvar o DataFrame no banco de dados
-dados.to_sql('stocks', conn, if_exists='replace', index=True, index_label='ID')
-# Consultar os dados do banco de dados SQLite
-consulta = pd.read_sql_query("SELECT * FROM stocks",conn)
-
-# Salvar dados em um arquivo xlsx
-dados.to_excel('data/investimentos.xlsx', index=False)
+with connection() as conn:
+    dados.to_sql('stocks', conn, if_exists='replace', index=True, index_label='ID')
+    
 print("Dados salvos com sucesso")
 # Exibir os dados consultados no prompt (Alternativa)
 
-#print(tabulate(consulta, headers='keys', tablefmt='fancy_grid', stralign='center'))
-
-# Fechar a conexão com o banco de dados
-conn.close()
