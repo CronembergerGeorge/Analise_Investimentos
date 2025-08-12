@@ -1,6 +1,5 @@
 import pandas as pd
 import yfinance as yf
-from formatacao import formatar_data, formatar_valor, formatar_percentual, formatar_numeros
 
 #Calcula a relação divida/Ebitda para um ticker
 def get_divida_ebitda(ticker):
@@ -55,8 +54,8 @@ def coletar_dados_completos(tickers): # Coleta dados financeiros para uma lista 
             "Margem Líquida (%)": round((info.get("profitMargins", 0) or 0) * 100, 2),
             "Payout Ratio": round(info.get("payoutRatio", 0) * 100, 2),
             "Ultimo Dividendo ($)": (info.get("lastDividendValue", 0)),
-            "Último Pagamento(Data)": formatar_data(info.get("lastDividendDate", None)),
-            "Proximo Dividendo(Data)": formatar_data(info.get("DividendDate", None)),
+            "Último Pagamento(Data)": info.get("lastDividendDate", None),
+            "Proximo Dividendo(Data)": info.get("DividendDate", None),
             "Market Cap (B)": round(info.get("marketCap", 0)),
             "Ultima Atualização": data_atual
         }

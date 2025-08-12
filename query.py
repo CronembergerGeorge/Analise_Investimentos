@@ -16,7 +16,7 @@ def get_segmento(setor:str=None):
     with connection() as con:
         cursor = con.cursor()
         query = f'''
-            SELECT segmento
+            SELECT DISTINCT segmento
             FROM stocks
             WHERE 1=1
             '''

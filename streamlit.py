@@ -1,12 +1,29 @@
 import streamlit as st
 import plotly.express as px
 import pandas as pd
-from db import connection
 from query import get_tickers, get_columns, get_top_10, get_segmento, get_setor
 from exportar import exportar_excel
+from coleta import coletar_dados_completos
+from config import tickers
+from db import salvar_dados
 
 st.set_page_config(layout="wide")
-st.title("Visualizador de Indicadores Financeiros")
+
+#st.sidebar.header("Filtros")
+#ticker_selecionados = st.sidebar.multiselect(
+#    "Selecionar Empresas", 
+#    get_tickers(setor_selecionado, segmento_selecionado)
+#)
+
+#indicadores_selecionados = st.sidebar.multiselect(
+#    "Selecionar indicadores",
+#    get_columns()
+#)
+#ordem = st.sidebar.radio(
+#    "Ordem do Gráfico",
+#    options = ["Maior valor", "Menor valor"],
+#    index=0
+#)
 
 st.sidebar.header("Filtros")
 
@@ -14,101 +31,64 @@ setor_selecionado = st.sidebar.selectbox(
     "Selecione o setor",[""] +
     get_setor()
     )
-
 segmento_selecionado = st.sidebar.selectbox(
-    "Selecione o segmento",[""] + 
+    "Selecione o setor",[""] +
     get_segmento(setor_selecionado)
     )
 
-ticker_selecionados = st.sidebar.multiselect(
-    "Selecionar Empresas", 
-    get_tickers(setor_selecionado, segmento_selecionado)
-)
+if setor_selecionado != "" and segmento_selecionado != "":
+    st.title("Visualizador de Indicadores Financeiros - Gráficos")
 
-indicadores_selecionados = st.sidebar.multiselect(
-    "Selecionar indicadores",
-    get_columns()
-)
+    graf1, graf2 = st.columns(2)
+    
+    with graf1:   
+        filtro_coluna = None
+        filtro_valor = None
 
-ordem = st.sidebar.radio(
-    "Ordem do Gráfico",
-    options = ["Maior valor", "Menor valor"],
-    index=0
-)
-
-if st.sidebar.button("Visualizar Tabela"):
-    if not ticker_selecionados or not indicadores_selecionados:
-        st.warning("Selecione pelo menos um Ticker e um Indicador")
-    else:
-        colunas = ", ".join(['Ticker'] + [f'"{col}"' for col in indicadores_selecionados])
-        placeholders = ", ".join(['?'] * len(ticker_selecionados))
-        
-        query = f'''
-        SELECT {colunas}
-        FROM stocks
-        WHERE Ticker IN ({placeholders})
-        '''
-        
-        with connection() as con:
-            df = pd.read_sql_query(query, con, params = ticker_selecionados)
-            
-        st.dataframe(df)
-        
-        if len(indicadores_selecionados) == 1:
-            indicador = indicadores_selecionados[0]
-            df_sorted = df.sort_values(by=indicador, ascending=(ordem == "Menor valor"))
-
-elif setor_selecionado != "" and segmento_selecionado != "": 
-    st.subheader("Gráfico de Barra")
-
-    filtro_coluna = None
-    filtro_valor = None
-
-    if segmento_selecionado != "":
-        filtro_coluna = "segmento"
-        filtro_valor = segmento_selecionado
-    if setor_selecionado != "":
-        filtro_coluna = "setor"
-        filtro_valor = setor_selecionado
-    indicador = st.selectbox(
-        "Primário", [""] +
-        get_columns(),
-        key="indicador 1"
-        )  
-    st.subheader("Gráfico Vertical")
-    top10_data = get_top_10([indicador], filtro_coluna, filtro_valor, limit=10)
-    df = pd.DataFrame(top10_data, columns=["Ticker", indicador])
-    fig = px.bar(
-        df,
-        x="Ticker",
-        y=indicador,
-        title=f"Top 10 por {indicador} filtrado por {filtro_coluna}"
-        )        
-    st.plotly_chart(fig,use_container_width=True)
-
-    st.subheader("Gráfico Horizontal")
-    fig = px.bar(
-        df,
-        x=indicador,
-        y="Ticker",
-        title=f"Top 10 por {indicador} filtrado por {filtro_coluna}",
-        orientation='h'
-        )        
-    st.plotly_chart(fig,use_container_width=True)
+        if setor_selecionado != "":
+            filtro_coluna = "setor"
+            filtro_valor = setor_selecionado
+        if segmento_selecionado != "":
+            filtro_coluna = "segmento"
+            filtro_valor = segmento_selecionado
+        indicador = st.selectbox(
+            "Indicador Primário", [""] +
+            get_columns(),
+            key="indicador 1"
+            )  
+        st.subheader("Gráfico Vertical")
+        top10_data = get_top_10([indicador], filtro_coluna, filtro_valor, limit=10)
+        df = pd.DataFrame(top10_data, columns=["Ticker", indicador])
+        fig = px.bar(
+            df,
+            x="Ticker",
+            y=indicador,
+            title=f"Top 10 por {indicador} filtrado por {filtro_coluna}"
+            )        
+        st.plotly_chart(fig,use_container_width=True)
+        st.subheader("Gráfico Horizontal")
+        fig = px.bar(
+            df,
+            x=indicador,
+            y="Ticker",
+            title=f"Top 10 por {indicador} filtrado por {filtro_coluna}",
+            orientation='h'
+            )        
+        st.plotly_chart(fig,use_container_width=True)
 
     st.subheader("Gráfico Scatter")
 
     col1, col2 = st.columns(2)
     with col1:
         indicador = st.selectbox(
-            "Primário", [""] +
+            "Indicador Primário", [""] +
             get_columns(),
             key="indicador 2"
             )
             
     with col2:
         second_indicador = st.selectbox(
-            "Secundário", [""] +
+            "Indicador Secundário", [""] +
             get_columns(indicador),
             key="indicador 3"
             )
@@ -124,11 +104,32 @@ elif setor_selecionado != "" and segmento_selecionado != "":
             )
         st.plotly_chart(fig, use_container_width = True)
 
+if st.sidebar.button("Atualizar dados"):
+    with st.spinner("Coletando dados..."):
+        dados = coletar_dados_completos(tickers)
+        colunas_ordenadas = [
+        'Ticker', 'Nome', 'Setor', 'Segmento', '5Y Dividendo', 'Div Yield (%)',
+        '52-Week Low', 'Preço Atual', '52-Week High', 
+        'Beta', 'P/L', 'P/L Future', 'P/VP', 
+        'ROE (%)', 'Margem Líquida (%)',
+        'Payout Ratio', 'Receita', 'Lucro',
+        'Free Cash Flow', 'EV/EBITDA', 'Divida/EBITDA',
+        'Crescimento receita', 'Crescimento lucro',
+        'Ultimo Dividendo ($)', 'Último Pagamento(Data)', 'Proximo Dividendo(Data)',
+        'Market Cap (B)',
+        'Ultima Atualização'
+        ]
+        dados = dados[colunas_ordenadas]
+        # Salvar os dados no banco de dados SQLite
+
+        salvar_dados(dados)
+    st.dataframe(dados)
+
 caminho = exportar_excel()
 
 with open(caminho, 'rb') as file:
     st.sidebar.download_button(
-        label = "Download",
+        label = "Download Arquivo",
         data=file,
         file_name="investimentos_.xlsx",
         mime='application/vdn.openxmlformats-officedocument.spreadsheetml.sheet'

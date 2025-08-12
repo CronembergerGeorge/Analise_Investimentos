@@ -1,48 +1,8 @@
-import yfinance as yf
-import pandas as pd
-import sqlite3
-from coleta import coletar_dados_completos
-from db import connection
+import subprocess
 
-# Baixar dados de ações usando yfinance
-tickers = [
-    'ABBV', 'ABT', 'ADC', 'ADP', 'AEP', 'ALL', 'AMGN', 'AMSF', 'AMT', 'ARTNA',
-    'ATO', 'AVB', 'AVGO', 'AWK', 'BAC', 'BBY', 'BXP', 'CAT', 'C',
-    'CINF', 'CL', 'CMS', 'CME', 'CNP', 'COST', 'CSCO', 'CTRE', 'CVS', 'CVX',
-    'CUBE', 'DLR', 'DOW', 'DUK', 'DVN', 'EGP', 'ENB', 'EQIX', 'EQR', 'EPRT',
-    'ESS', 'EXR', 'FDX', 'GILD', 'GD', 'GS', 'GWRS', 'HMC', 'HON',
-    'HPQ', 'HSBC', 'IBM', 'INVH', 'JNJ', 'JPM', 'KIM', 'KMB', 'KO', 'KRC',
-    'LIN', 'LMT', 'LRCX', 'LYB', 'MAIN', 'MAA', 'MCD', 'MDT', 'MET', 'MMM',
-    'MS', 'MSFT', 'NEE', 'NGG', 'NUE', 'O', 'OHI', 'OKE', 'ORCL', 'PEP', 'PG',
-    'PLD', 'PSA', 'PSX', 'PZZA', 'QCOM', 'REG', 'RGCO', 'SLG', 'SO', 'SPG',
-    'STAG', 'T', 'TROW', 'TTE', 'UL', 'UNP', 'UPS', 'VICI', 'VTR', 'VZ',
-    'WEC', 'WELL', 'WPC', 'XOM'
-]
-# Iterar sobre os tickers e coletar informações
-dados = coletar_dados_completos(tickers)
-# Converter a lista de dados em um DataFrame
-dados = pd.DataFrame(dados)
+def run_stramlit():
+    subprocess.run(["streamlit", "run", "streamlit.py"])
 
-colunas_ordenadas = [
-    'Ticker', 'Nome', 'Setor', 'Segmento', '5Y Dividendo', 'Div Yield (%)',
-    '52-Week Low', 'Preço Atual', '52-Week High', 
-    'Beta', 'P/L', 'P/L Future', 'P/VP', 
-    'ROE (%)', 'Margem Líquida (%)',
-    'Payout Ratio', 'Receita', 'Lucro',
-    'Free Cash Flow', 'EV/EBITDA', 'Divida/EBITDA',
-    'Crescimento receita', 'Crescimento lucro',
-    'Ultimo Dividendo ($)', 'Último Pagamento(Data)', 'Proximo Dividendo(Data)',
-    'Market Cap (B)',
-    'Ultima Atualização'
-]
-
-dados = dados[colunas_ordenadas]
-# Salvar os dados no banco de dados SQLite
-dados.index = range(1, len(dados) + 1)  # Ajustar o índice para começar em 1
-# Salvar o DataFrame no banco de dados
-with connection() as conn:
-    dados.to_sql('stocks', conn, if_exists='replace', index=True, index_label='ID')
-    
-print("Dados salvos com sucesso")
-# Exibir os dados consultados no prompt (Alternativa)
+if __name__ == "__main__":
+    run_stramlit()
 
