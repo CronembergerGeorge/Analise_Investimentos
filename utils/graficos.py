@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
-from formatacao import formatar_bilhoes
+from utils.formatacao import formatar_bilhoes
 
 # Carregar os dados
 df = pd.read_excel("data/investimentos.xlsx")

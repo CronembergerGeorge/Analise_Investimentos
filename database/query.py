@@ -1,4 +1,4 @@
-from db import connection
+from database.db import connection
 
 def get_setor():
     with connection() as con:

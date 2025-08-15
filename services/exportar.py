@@ -1,6 +1,6 @@
 import pandas as pd
-from db import connection 
-from formatacao import formatar_para_exportar
+from database.db import connection 
+from utils.formatacao import formatar_para_exportar
 
 def exportar_excel():
     conn = connection()
