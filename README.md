@@ -18,19 +18,19 @@ Este projeto realiza a **coleta, organização e armazenamento** de dados financ
 ---
 
 ## 📦 Funcionalidades
-✅ Coleta de dados para uma lista personalizada de ações (config.py)
-✅ Indicadores financeiros: P/L, ROE, Beta, Margem líquida, EV/EBITDA, Dívida/EBITDA, FCF, entre outros
-✅ Dividendos: último valor, data do pagamento, dividend yield e média 5 anos
-✅ Crescimento de receita e lucro
-✅ Exportação para banco de dados SQLite (stocks e carteira)
-✅ Exportação para planilha Excel (.xlsx)
-✅ Interface interativa via Streamlit com filtros por Setor, Segmento e Ticker
-✅ Visualização gráfica interativa (Plotly):
-✅ Gráficos de barras verticais e horizontais (Top 10 indicadores)
-✅ Gráficos de dispersão (scatter) entre indicadores selecionados
-✅ Gestão de movimentações da carteira (compra, venda, dividendos, JSCP, rendimento tributável)
-✅ Edição e exclusão de operações da carteira
-✅ Cálculo automático de retenção de impostos para Brasil e USA 
+✅ Coleta de dados para uma lista personalizada de ações (config.py)  
+✅ Indicadores financeiros: P/L, ROE, Beta, Margem líquida, EV/EBITDA, Dívida/EBITDA, FCF, entre outros  
+✅ Dividendos: último valor, data do pagamento, dividend yield e média 5 anos  
+✅ Crescimento de receita e lucro  
+✅ Exportação para banco de dados SQLite (stocks e carteira)  
+✅ Exportação para planilha Excel (.xlsx)  
+✅ Interface interativa via Streamlit com filtros por Setor, Segmento e Ticker  
+✅ Visualização gráfica interativa (Plotly):  
+✅ Gráficos de barras verticais e horizontais (Top 10 indicadores)  
+✅ Gráficos de dispersão (scatter) entre indicadores selecionados  
+✅ Gestão de movimentações da carteira (compra, venda, dividendos, JSCP, rendimento tributável)  
+✅ Edição e exclusão de operações da carteira  
+✅ Cálculo automático de retenção de impostos para Brasil e USA   
 
 ---
 📊 Visualização de Dados
