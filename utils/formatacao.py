@@ -63,15 +63,19 @@ def formatar_para_exportar(df):
         ]
     # Formatar valores monetários
     for col in colunas_valores:
-        df[col] = df[col].apply(formatar_valor)
+        if col in df.columns:
+            df[col] = df[col].apply(formatar_valor)
     # Formatar percentuais
-    for col in colunas_percentuais:
-        df[col] = df[col].apply(formatar_percentual)
+    for col in colunas_percentuais:  
+        if col in df.columns:
+            df[col] = df[col].apply(formatar_percentual)
     # Formatar números
     for col in colunas_numeros:
-        df[col] = df[col].apply(formatar_numeros)
+        if col in df.columns:
+            df[col] = df[col].apply(formatar_numeros)
     # Formatar Data
     for col in colunas_data:
-        df[col] = df[col].apply(formatar_data)
+        if col in df.columns:
+            df[col] = df[col].apply(formatar_data)
 
     return df

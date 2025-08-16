@@ -18,7 +18,10 @@ painels = {
     "Atualizar Dados": painel_atualizar, 
     "Download Arquivo": painel_download, 
     }
-            
+
+def painel_main():
+    st.header("Gráfico de distribuição da Carteira")
+   
 def show():
     st.set_page_config(layout="wide")
 
@@ -41,7 +44,7 @@ def show():
     if painel_ativo:
         painel_ativo()
     else:
-        st.header("Gráfico de distribuição da Carteira")
+        painel_main()
                  
 if __name__ == "__main__":
     show()
